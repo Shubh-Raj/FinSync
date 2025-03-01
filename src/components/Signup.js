@@ -113,7 +113,7 @@ const SignUpSignIn = () => {
         {flag ? (
           <div className="signup-signin-container">
             <h2 style={{ textAlign: "center" }}>
-              Log In on <span className="blue-text">Financely.</span>
+              Log In on <span className="blue-text">FinSync.</span>
             </h2>
             <form onSubmit={signUpWithEmail}>
               <div className="input-wrapper">
@@ -167,7 +167,7 @@ const SignUpSignIn = () => {
         ) : (
           <div className="signup-signin-container">
             <h2 style={{ textAlign: "center" }}>
-              Sign Up on <span className="blue-text">Financely.</span>
+              Sign Up on <span className="blue-text">FinSync.</span>
             </h2>
             <form onSubmit={signUpWithEmail}>
               <div className="input-wrapper">
