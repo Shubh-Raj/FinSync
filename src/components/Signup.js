@@ -120,7 +120,7 @@ const SignUpSignIn = () => {
                 <p>Email</p>
                 <input
                   type="email"
-                  placeholder="JohnDoe@gmail.com"
+                  placeholder="example@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -174,7 +174,7 @@ const SignUpSignIn = () => {
                 <p>Full Name</p>
                 <input
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Enter Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -183,7 +183,7 @@ const SignUpSignIn = () => {
                 <p>Email</p>
                 <input
                   type="email"
-                  placeholder="JohnDoe@gmail.com"
+                  placeholder="example@sample.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
