@@ -1,30 +1,92 @@
-# Getting Started with Create React App
+# FinSync - Personal Finance Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+FinSync is a **Personal Finance Tracker** built using **React, Redux, and Firebase**. It helps users track their income, expenses, and savings effortlessly, ensuring better financial management.
 
-## Available Scripts
+## 🚀 Features
+- 🔹 **User Authentication** (Google Sign-in, Email/Password) with Firebase Auth
+- 📊 **Expense & Income Tracking** with real-time updates
+- 💰 **Budget Management** for better financial planning
+- ☁ **Cloud Storage & Syncing** with Firebase Firestore
+- 📈 **Interactive Charts & Analytics** for expense insights
+- 🎨 **Responsive UI** for seamless experience across devices
 
-In the project directory, you can run:
+---
 
+## 🛠 Tech Stack
+- **Frontend**: React, Redux, React Router
+- **Backend**: Firebase (Authentication, Firestore, Storage)
+- **State Management**: Redux Toolkit
+- **Styling**: Tailwind CSS / Material-UI
+
+---
+
+## 📦 Installation & Setup
+### 1️⃣ Clone the Repository
+```sh
+git clone https://github.com/Shubh-Raj/FinSync.git
+cd FinSync
+```
+
+### 2️⃣ Install Dependencies
+```sh
+npm install
+```
+
+### 3️⃣ Set Up Firebase
+- Create a **Firebase project** at [Firebase Console](https://console.firebase.google.com/)
+- Enable **Firestore, Authentication, and Storage**
+- Create a `.env` file in the root folder and add your Firebase config:
+  ```env
+  REACT_APP_FIREBASE_API_KEY=your_api_key
+  REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+  REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+  REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+  REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_id
+  REACT_APP_FIREBASE_APP_ID=your_app_id
+  ```
+
+### 4️⃣ Start the Development Server
+```sh
+npm start
+```
+🚀 Open **http://localhost:3000** to view the app in your browser.
+
+---
+
+## 🔨 Available Scripts
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Runs the app in development mode.
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
+Builds the app for production in the `build` folder.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `npm run deploy`
+Deploys the app to Firebase Hosting (Requires Firebase CLI setup).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📤 Deployment
+### 🚀 Deploy to Firebase
+```sh
+npm run build
+firebase deploy
+```
+Make sure you have the Firebase CLI installed and configured.
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! Feel free to **fork this repository** and submit a pull request.
+
+---
+
+## 📩 Contact
+For queries or collaborations, reach out at **btech10068.23@bitmesra.ac.in**
+
+---
+
+🚀 Happy Tracking & Budgeting! 💰
+
