@@ -6,9 +6,7 @@ FinSync is a **Personal Finance Tracker** built using **React, Redux, and Fireba
 ---
 
 ## 🌍 Live Demo
-The project is live at: **[FinSync - Personal Finance Tracker](https://finsync-nine.vercel.app/)
-
-**
+The project is live at: **[FinSync - Personal Finance Tracker](https://finsync-nine.vercel.app/)**
 
 ## 🚀 Features
 - 🔹 **User Authentication** (Google Sign-in, Email/Password) with Firebase Auth
