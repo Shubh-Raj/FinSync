@@ -1,6 +1,6 @@
 # FinSync - Personal Finance Tracker
 
-FinSync is a **Personal Finance Tracker** built using **React, Redux, and Firebase**. It helps users track their income, expenses, and savings effortlessly, ensuring better financial management.
+FinSync is a **Personal Finance Tracker**. It helps users track their income, expenses, and savings effortlessly, ensuring better financial management.
 
 
 ---
