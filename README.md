@@ -22,8 +22,7 @@ The project is live at: **[FinSync - Personal Finance Tracker](https://finsync-n
 - **Frontend**: React, Redux, React Router
 - **Backend**: Firebase (Authentication, Firestore, Storage)
 - **State Management**: Redux Toolkit
-- **Styling**: Tailwind CSS / Material-UI
-
+- **Styling**: Tailwind CSS 
 
 ---
 
@@ -72,19 +71,6 @@ Builds the app for production in the `build` folder.
 
 ### `npm run deploy`
 Deploys the app to Vercel.
-
----
-
-## 📤 Deployment
-### 🚀 Deploy to Vercel
-This project is hosted on **Vercel** and updates automatically with every push to GitHub.
-
-To manually deploy, run:
-```sh
-vercel --prod
-```
-
-You can access the live version here: **[FinSync - Personal Finance Tracker](https://finsync-nine.vercel.app/)**
 
 ---
 
