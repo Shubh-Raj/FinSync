@@ -19,7 +19,7 @@ The project is live at: **[FinSync - Personal Finance Tracker](https://finsync-n
 ---
 
 ## 🛠 Tech Stack
-- **Frontend**: React, Redux, React Router
+- **Frontend**: React, Redux, React Router, Ant Design
 - **Backend**: Firebase (Authentication, Firestore, Storage)
 - **State Management**: Redux Toolkit
 - **Styling**: Tailwind CSS 
