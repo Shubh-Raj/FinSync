@@ -13,7 +13,8 @@ const TransactionSearch = ({
   exportToCsv,
   addTransaction,
   fetchTransactions,
-  openEditModal 
+  openEditModal,
+  handleDeleteTransaction,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
@@ -77,12 +78,25 @@ const TransactionSearch = ({
       title: "Actions",
       key: "actions",
       render: (text, record) => (
-        <button className="btn btn-edit" onClick={() => openEditModal(record)}>
-          Edit
-        </button>
+        <>
+          <button
+            className="btn btn-edit"
+            onClick={() => openEditModal(record)}
+            style={{ marginRight: "8px" }}
+          >
+            Edit
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => handleDeleteTransaction(record.id)}
+          >
+            Delete
+          </button>
+        </>
       ),
     },
   ];
+  
 
   const filteredTransactions = transactions.filter((transaction) => {
     const searchMatch = searchTerm

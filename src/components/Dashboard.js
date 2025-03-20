@@ -18,6 +18,8 @@ import { unparse } from "papaparse";
 import { updateDoc, doc } from "firebase/firestore";
 import EditTransactionModal from "./Modals/EditTransactionModal";
 import { useRef } from "react";
+import { deleteDoc} from "firebase/firestore";
+
 
 
 const Dashboard = () => {
@@ -40,6 +42,26 @@ const Dashboard = () => {
   };
 
   const navigate = useNavigate();
+
+  const handleDeleteTransaction = async (transactionId) => {
+    try {
+      const transactionRef = doc(db, `users/${user.uid}/transactions`, transactionId);
+  
+      await deleteDoc(transactionRef);
+  
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter((transaction) => transaction.id !== transactionId)
+      );
+  
+      calculateBalance();
+  
+      toast.success("Transaction deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      toast.error("Failed to delete transaction.");
+    }
+  };
+  
 
   const processChartData = () => {
     const balanceData = [];
@@ -185,7 +207,6 @@ const Dashboard = () => {
     }
   };
 
-  // Calculate the initial balance, income, and expenses
   useEffect(() => {
     calculateBalance();
   }, [transactions]);
@@ -306,6 +327,7 @@ const Dashboard = () => {
               fetchTransactions={fetchTransactions}
               addTransaction={addTransaction}
               openEditModal={openEditModal}
+              handleDeleteTransaction={handleDeleteTransaction}
             />
           </div>
 
