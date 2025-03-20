@@ -15,6 +15,9 @@ import Loader from "./Loader";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { unparse } from "papaparse";
+import { updateDoc, doc } from "firebase/firestore";
+import EditTransactionModal from "./Modals/EditTransactionModal";
+
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);
@@ -49,6 +52,9 @@ const Dashboard = () => {
   const [currentBalance, setCurrentBalance] = useState(0);
   const [income, setIncome] = useState(0);
   const [expenses, setExpenses] = useState(0);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [transactionToEdit, setTransactionToEdit] = useState(null);
+
 
   const navigate = useNavigate();
 
@@ -108,11 +114,53 @@ const Dashboard = () => {
     setIsIncomeModalVisible(false);
   };
 
+  const openEditModal = (transaction) => {
+    setTransactionToEdit(transaction);
+    setIsEditModalVisible(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalVisible(false);
+    setTransactionToEdit(null);
+  };
+
+
   useEffect(() => {
     fetchTransactions();
   }, []);
 
-  const onFinish = (values, type) => {
+  const handleEditFinish = async (updatedTransaction) => {
+    try {
+      const formattedDate = moment(updatedTransaction.date).format("YYYY-MM-DD");
+      
+      const updatedAmount = parseFloat(updatedTransaction.amount);
+      
+      const transactionRef = doc(db, `users/${user.uid}/transactions`, updatedTransaction.id);
+  
+      await updateDoc(transactionRef, {
+        name: updatedTransaction.name,
+        amount: updatedAmount,
+        date: formattedDate,
+        tag: updatedTransaction.tag,
+      });
+  
+      setTransactions((prevTransactions) =>
+        prevTransactions.map((transaction) =>
+          transaction.id === updatedTransaction.id 
+            ? { ...transaction, ...updatedTransaction, date: formattedDate, amount: updatedAmount }
+            : transaction
+        )
+      );
+  
+      toast.success("Transaction updated successfully!");
+    } catch (error) {
+      console.error("Error updating transaction:", error);
+      toast.error("Failed to update transaction.");
+    }
+    closeEditModal();
+  };
+  
+  const onFinish = async (values, type) => {
     const newTransaction = {
       type: type,
       date: moment(values.date).format("YYYY-MM-DD"),
@@ -120,12 +168,18 @@ const Dashboard = () => {
       tag: values.tag,
       name: values.name,
     };
-
-    setTransactions([...transactions, newTransaction]);
+  
     setIsExpenseModalVisible(false);
     setIsIncomeModalVisible(false);
-    addTransaction(newTransaction);
-    calculateBalance();
+  
+    try {
+      const newDocId = await addTransaction(newTransaction);
+      const transactionWithId = { ...newTransaction, id: newDocId };
+      setTransactions((prevTransactions) => [...prevTransactions, transactionWithId]);
+      calculateBalance();
+    } catch (error) {
+      console.error("Error adding new transaction:", error);
+    }
   };
 
   const calculateBalance = () => {
@@ -160,13 +214,16 @@ const Dashboard = () => {
       if (!many) {
         toast.success("Transaction Added!");
       }
+      return docRef.id;  
     } catch (e) {
       console.error("Error adding document: ", e);
       if (!many) {
         toast.error("Couldn't add transaction");
       }
+      throw e; 
     }
   }
+  
 
   async function fetchTransactions() {
     setLoading(true);
@@ -175,8 +232,7 @@ const Dashboard = () => {
       const querySnapshot = await getDocs(q);
       let transactionsArray = [];
       querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        transactionsArray.push(doc.data());
+        transactionsArray.push({ id: doc.id, ...doc.data() });
       });
       setTransactions(transactionsArray);
       toast.success("Transactions Fetched!");
@@ -248,6 +304,15 @@ const Dashboard = () => {
             handleIncomeCancel={handleIncomeCancel}
             onFinish={onFinish}
           />
+          {isEditModalVisible && transactionToEdit && (
+            <EditTransactionModal
+              isVisible={isEditModalVisible}
+              handleCancel={closeEditModal}
+              transactionData={transactionToEdit}
+              onFinish={handleEditFinish}
+            />
+          )}
+
           {transactions.length === 0 ? (
             <NoTransactions />
           ) : (
@@ -274,6 +339,7 @@ const Dashboard = () => {
             exportToCsv={exportToCsv}
             fetchTransactions={fetchTransactions}
             addTransaction={addTransaction}
+            openEditModal={openEditModal} 
           />
         </>
       )}

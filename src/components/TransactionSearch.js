@@ -13,6 +13,7 @@ const TransactionSearch = ({
   exportToCsv,
   addTransaction,
   fetchTransactions,
+  openEditModal 
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
@@ -71,6 +72,15 @@ const TransactionSearch = ({
       title: "Tag",
       dataIndex: "tag",
       key: "tag",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <button className="btn btn-edit" onClick={() => openEditModal(record)}>
+          Edit
+        </button>
+      ),
     },
   ];
 
