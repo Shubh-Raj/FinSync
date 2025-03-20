@@ -260,7 +260,7 @@ const Dashboard = () => {
 
                 <Card bordered={true} style={{ ...cardStyle, flex: 0.45 }}>
                   <h2>Total Spending</h2>
-                  {spendingDataArray.length == 0 ? (
+                  {spendingDataArray.length === 0 ? (
                     <p>Seems like you haven't spent anything till now...</p>
                   ) : (
                     <Pie {...{ ...spendingConfig, data: spendingDataArray }} />

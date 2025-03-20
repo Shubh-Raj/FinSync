@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, provider, db } from "../firebase";
+import { auth, provider, db, githubProvider } from "../firebase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -89,6 +89,22 @@ const SignUpSignIn = () => {
       setLoading(false);
     }
   };
+  const signInWithGitHub = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      const user = result.user;
+      await createUserDocument(user); 
+      toast.success("GitHub Authentication Successful!");
+      setLoading(false);
+      navigate("/dashboard");
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message);
+      console.error("Error signing in with GitHub: ", error.message);
+    }
+  };
+
 
   const signInWithGoogle = async () => {
     setLoading(true);
@@ -152,6 +168,10 @@ const SignUpSignIn = () => {
             >
               {loading ? "Loading..." : " Log In with Google"}
             </button>
+            <button disabled={loading} className="btn btn-blue" onClick={signInWithGitHub}>
+              {loading ? "Loading..." : " Log In with GitHub"}
+            </button>
+
             <p
               onClick={() => setFlag(!flag)}
               style={{
@@ -221,6 +241,14 @@ const SignUpSignIn = () => {
             >
               {loading ? "Loading..." : "Sign Up with Google"}
             </button>
+            <button
+              disabled={loading}
+              className="btn btn-blue"
+              onClick={signInWithGitHub}
+            >
+              {loading ? "Loading..." : "Sign Up with GitHub"}
+            </button>
+
             <p
               onClick={() => setFlag(!flag)}
               style={{
