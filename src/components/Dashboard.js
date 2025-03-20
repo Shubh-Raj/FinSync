@@ -17,34 +17,11 @@ import { useNavigate } from "react-router-dom";
 import { unparse } from "papaparse";
 import { updateDoc, doc } from "firebase/firestore";
 import EditTransactionModal from "./Modals/EditTransactionModal";
+import { useRef } from "react";
 
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);
-
-  // const sampleTransactions = [
-  // {
-  //   name: "Pay day",
-  //   type: "income",
-  //   date: "2023-01-15",
-  //   amount: 2000,
-  //   tag: "salary",
-  // },
-  // {
-  //   name: "Dinner",
-  //   type: "expense",
-  //   date: "2023-01-20",
-  //   amount: 500,
-  //   tag: "food",
-  // },
-  // {
-  //   name: "Books",
-  //   type: "expense",
-  //   date: "2023-01-25",
-  //   amount: 300,
-  //   tag: "education",
-  // },
-  // ];
   const [isExpenseModalVisible, setIsExpenseModalVisible] = useState(false);
   const [isIncomeModalVisible, setIsIncomeModalVisible] = useState(false);
   const [transactions, setTransactions] = useState([]);
@@ -54,7 +31,13 @@ const Dashboard = () => {
   const [expenses, setExpenses] = useState(0);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [transactionToEdit, setTransactionToEdit] = useState(null);
+  const transactionTableRef = useRef(null);
 
+  const scrollToTransactions = () => {
+    if (transactionTableRef.current) {
+      transactionTableRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -132,26 +115,26 @@ const Dashboard = () => {
   const handleEditFinish = async (updatedTransaction) => {
     try {
       const formattedDate = moment(updatedTransaction.date).format("YYYY-MM-DD");
-      
+
       const updatedAmount = parseFloat(updatedTransaction.amount);
-      
+
       const transactionRef = doc(db, `users/${user.uid}/transactions`, updatedTransaction.id);
-  
+
       await updateDoc(transactionRef, {
         name: updatedTransaction.name,
         amount: updatedAmount,
         date: formattedDate,
         tag: updatedTransaction.tag,
       });
-  
+
       setTransactions((prevTransactions) =>
         prevTransactions.map((transaction) =>
-          transaction.id === updatedTransaction.id 
+          transaction.id === updatedTransaction.id
             ? { ...transaction, ...updatedTransaction, date: formattedDate, amount: updatedAmount }
             : transaction
         )
       );
-  
+
       toast.success("Transaction updated successfully!");
     } catch (error) {
       console.error("Error updating transaction:", error);
@@ -159,7 +142,7 @@ const Dashboard = () => {
     }
     closeEditModal();
   };
-  
+
   const onFinish = async (values, type) => {
     const newTransaction = {
       type: type,
@@ -168,10 +151,10 @@ const Dashboard = () => {
       tag: values.tag,
       name: values.name,
     };
-  
+
     setIsExpenseModalVisible(false);
     setIsIncomeModalVisible(false);
-  
+
     try {
       const newDocId = await addTransaction(newTransaction);
       const transactionWithId = { ...newTransaction, id: newDocId };
@@ -193,10 +176,13 @@ const Dashboard = () => {
         expensesTotal += transaction.amount;
       }
     });
-
+    const current = incomeTotal - expensesTotal;
     setIncome(incomeTotal);
     setExpenses(expensesTotal);
     setCurrentBalance(incomeTotal - expensesTotal);
+    if (current < 0) {
+      toast.warning("Warning: Your balance is negative!");
+    }
   };
 
   // Calculate the initial balance, income, and expenses
@@ -214,16 +200,16 @@ const Dashboard = () => {
       if (!many) {
         toast.success("Transaction Added!");
       }
-      return docRef.id;  
+      return docRef.id;
     } catch (e) {
       console.error("Error adding document: ", e);
       if (!many) {
         toast.error("Couldn't add transaction");
       }
-      throw e; 
+      throw e;
     }
   }
-  
+
 
   async function fetchTransactions() {
     setLoading(true);
@@ -252,9 +238,7 @@ const Dashboard = () => {
     colorField: "category",
   };
 
-  function reset() {
-    console.log("resetting");
-  }
+
   const cardStyle = {
     boxShadow: "0px 0px 30px 8px rgba(227, 227, 227, 0.75)",
     margin: "2rem",
@@ -291,8 +275,39 @@ const Dashboard = () => {
             showExpenseModal={showExpenseModal}
             showIncomeModal={showIncomeModal}
             cardStyle={cardStyle}
-            reset={reset}
+            scrollToTransactions={scrollToTransactions}
           />
+
+          {transactions.length === 0 ? (
+            <NoTransactions />
+          ) : (
+            <Row gutter={16}>
+              <Card bordered={true} style={cardStyle}>
+                <h2>Financial Statistics</h2>
+                <Line {...{ ...balanceConfig, data: balanceData }} />
+              </Card>
+
+              <Card bordered={true} style={{ ...cardStyle, flex: 0.45 }}>
+                <h2>Total Spending</h2>
+                {spendingDataArray.length === 0 ? (
+                  <p>Seems like you haven't spent anything till now...</p>
+                ) : (
+                  <Pie {...{ ...spendingConfig, data: spendingDataArray }} />
+                )}
+              </Card>
+            </Row>
+          )}
+
+          {/* Transaction Table Section */}
+          <div ref={transactionTableRef}>
+            <TransactionSearch
+              transactions={transactions}
+              exportToCsv={exportToCsv}
+              fetchTransactions={fetchTransactions}
+              addTransaction={addTransaction}
+              openEditModal={openEditModal}
+            />
+          </div>
 
           <AddExpenseModal
             isExpenseModalVisible={isExpenseModalVisible}
@@ -312,35 +327,6 @@ const Dashboard = () => {
               onFinish={handleEditFinish}
             />
           )}
-
-          {transactions.length === 0 ? (
-            <NoTransactions />
-          ) : (
-            <>
-              <Row gutter={16}>
-                <Card bordered={true} style={cardStyle}>
-                  <h2>Financial Statistics</h2>
-                  <Line {...{ ...balanceConfig, data: balanceData }} />
-                </Card>
-
-                <Card bordered={true} style={{ ...cardStyle, flex: 0.45 }}>
-                  <h2>Total Spending</h2>
-                  {spendingDataArray.length === 0 ? (
-                    <p>Seems like you haven't spent anything till now...</p>
-                  ) : (
-                    <Pie {...{ ...spendingConfig, data: spendingDataArray }} />
-                  )}
-                </Card>
-              </Row>
-            </>
-          )}
-          <TransactionSearch
-            transactions={transactions}
-            exportToCsv={exportToCsv}
-            fetchTransactions={fetchTransactions}
-            addTransaction={addTransaction}
-            openEditModal={openEditModal} 
-          />
         </>
       )}
     </div>
