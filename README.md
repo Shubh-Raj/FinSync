@@ -9,7 +9,7 @@ FinSync is a **Personal Finance Tracker**. It helps users track their income, ex
 The project is live at: **[FinSync - Personal Finance Tracker](https://finsync-nine.vercel.app/)**
 
 ## 🚀 Features
-- 🔹 **User Authentication** (Google Sign-in, Email/Password) with Firebase Auth
+- 🔹 **User Authentication** (Google Sign-in, Email/Password, GitHub) with Firebase Auth
 - 📊 **Expense & Income Tracking** with real-time updates
 - 💰 **Budget Management** for better financial planning
 - ☁ **Cloud Storage & Syncing** with Firebase Firestore
